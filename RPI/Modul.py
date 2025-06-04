@@ -2,10 +2,11 @@ import time
 import board#DHT22 lib1
 import adafruit_dht #DHT22 lib2
 import Send_Data
-from flask import Flask, request
+from flask import Flask, request , jsonify
 from time import sleep
 import sys #safe Exit
 from hx711 import HX711 #hx711
+from flask_cors import CORS
 
 from gpiozero import MotionSensor #PIR
 import threading
@@ -18,7 +19,7 @@ state = False
 hx = HX711(20,16)
 Post = False
 app = Flask(__name__)
-
+CORS(app)
 Control_State_Admin = False
 
 @app.route('/')
@@ -29,7 +30,8 @@ def TestConnect():
 def Control_State():
     global Control_State_Admin
     Control_State_Admin =not Control_State_Admin
-    return f"Control_State_Admin is now {Control_State_Admin}"
+    print(Control_State_Admin)
+    return jsonify({"Control_State_Admin": Control_State_Admin})
 
 
 def cleanAndExit(): #^C Exit
@@ -39,25 +41,29 @@ def cleanAndExit(): #^C Exit
     sys.exit()
 
 def Detect():
-    global state, Control_State_Admin
+    global state, Control_State_Admin    
+    print(f'Control_State_Admin : {Control_State_Admin}')
     print("Motion Detected!")
     if(not Control_State_Admin):
         state = True
 
 def NoDetect():
-    global state
+    global state, Control_State_Admin
+    print(f'Control_State_Admin : {Control_State_Admin}')
     print("No motion")
     if(not Control_State_Admin):
         state = False
 
 def Data_post(temperature_c, humidity, state, weight):
-    global Post
+    global Post, Control_State_Admin
     data = [temperature_c,humidity,state, weight]
     if(not Post):
         Send_Data.http_post_data(data)
         Post = True
-    elif(Post):
+    elif(Post and not Control_State_Admin):
         Send_Data.http_put_data(data)
+    elif(Post and Control_State_Admin):
+        Send_Data.http_put_data2(data)
         
         
 sleep(5)
@@ -89,6 +95,7 @@ def main():
             temperature_c = dhtDevice.temperature
             #temperature_f = temperature_c * (9 / 5) + 32
             humidity = dhtDevice.humidity
+            
             print(f"{temperature_c:.1f} C   humidity: {humidity}%   state: {state}  Weight: {weight} ")#float float bool
             #print(f"temperature_c: {type(temperature_c)}, humidity: {type(humidity)}, state: {type(state)}")
             print(weight)
