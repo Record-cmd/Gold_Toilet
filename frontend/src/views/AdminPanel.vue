@@ -1,15 +1,14 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import { useToiletStore } from '@/stores/toiletStore.js';
 
-const store = useToiletStore();
-const URL = 'http://192.168.57.5:5000/state';
+const URL = 'http://192.168.132.5:5000/state';
 
 // 반응형 상태
 const Control_State_Admin = ref(false);
 const items = ref([]); // ✅ 리스트도 반응형으로 선언해야 함
   onMounted(() => {
+    /*
   axios.get('http://localhost:3000/get_toilet_info')
     .then(response => {
       const data = response.data;
@@ -20,7 +19,8 @@ const items = ref([]); // ✅ 리스트도 반응형으로 선언해야 함
     })
     .catch(error => {
       console.error('Error fetching toilet info:', error);
-    });
+    });*/
+    get_Toilet_data()
 
 });
 
@@ -45,6 +45,19 @@ function  Update_Data(ToiletId,Temperature,Humidity,State,Weight){
     Weight : Weight,
   }
   axios.put('http://localhost:3000/put_toilet_info/', data)
+  get_Toilet_data()
+}
+
+function get_Toilet_data(){
+  axios.get('http://localhost:3000/get_toilet_info')
+    .then(response => {
+      const data = response.data;
+      items.value = data
+      console.log(items.value);
+    })
+    .catch(error => {
+      console.error('Error fetching toilet info:', error);
+    });
 }
 
 
@@ -61,7 +74,7 @@ function  Update_Data(ToiletId,Temperature,Humidity,State,Weight){
       v-for="toilet in items"
       :key="toilet.ToiletId"
     >
-      <v-card-title>{{ toilet.ToiletId }}번 화장실</v-card-title>
+      <v-card-title>{{ toilet.ToiletId }}번 칸</v-card-title>
       <v-card-text>
         상태: <strong>{{ toilet.State ? '사용 불가' : '사용 가능' }}</strong><br>
         휴지: <strong>{{ toilet.Weight > 30 ? '충분' : '부족' }}</strong><br>
