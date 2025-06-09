@@ -1,8 +1,8 @@
 import requests, json
 import sys
 
-URL = "http://192.168.22.73:3000/"
-API = ["post_toilet_info","put_toilet_info"]
+URL = "http://192.168.132.73:3000/"
+API = ["put_toilet_info"]
 
     
 def http_put_data(data):
@@ -12,7 +12,7 @@ def http_put_data(data):
             'Count' : data,
         }
         try:
-            URL_api = URL + API[1]
+            URL_api = URL + API[0]
             res = requests.put(URL_api, json = Data)
             print(res.status_code)
             print("put")
