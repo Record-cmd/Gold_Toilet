@@ -5,6 +5,8 @@ const Contact = require('./Toilet.model.js'); //할일리스트의 스키마 구
   Temperature: { type: Number, require: true}, 
   Humidity:{type: Number, require: true},
   State:{type: Boolean, require: true}, 
+  Weight:{type: Number, require: true},
+  Count:{type:Number, require : true},
 */
 exports.create = (req, res) => {
   const contact = new Contact({
@@ -12,7 +14,8 @@ exports.create = (req, res) => {
     Temperature: req.body.Temperature,
     Humidity: req.body.Humidity,
     State: req.body.State,
-    Weight: req.body.Weight
+    Weight: req.body.Weight,
+    Count : req.body.Count
   });
   
   contact.save() //DB에 저장함
@@ -48,7 +51,7 @@ exports.findOne = (req, res) => {
 
 exports.correction = (req, res) => {
   Contact.findOneAndUpdate( {ToiletId:req.params.id}, 
-    { ToiletId: req.body.id, Temperature:req.body.Temperature, Humidity:req.body.Humidity, State:req.body.State, Weight:req.body.Weight}, 
+    { ToiletId: req.body.id, Temperature:req.body.Temperature, Humidity:req.body.Humidity, State:req.body.State, Weight:req.body.Weight, Count:req.body.Count}, 
     {new:true}
   )
   .then(contact => { 
@@ -64,7 +67,7 @@ exports.correction = (req, res) => {
 
 exports.correction2 = (req, res) => {
   Contact.findOneAndUpdate( {ToiletId:req.body.ToiletId}, 
-    { ToiletId: req.body.ToiletId, Temperature:req.body.Temperature, Humidity:req.body.Humidity, State:req.body.State, Weight:req.body.Weight}, 
+    { ToiletId: req.body.ToiletId, Temperature:req.body.Temperature, Humidity:req.body.Humidity, State:req.body.State, Weight:req.body.Weight, Count:req.body.Count}, 
     {new:true}
   )
   .then(contact => { 

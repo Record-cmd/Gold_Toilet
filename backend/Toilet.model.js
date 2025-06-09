@@ -6,6 +6,7 @@ var ContactSchema = mongoose.Schema({
   Humidity:{type: Number, require: true},
   State:{type: Boolean, require: true}, 
   Weight:{type: Number, require: true},
+  Count:{type:Number, require : true},
 });
 
 module.exports = mongoose.model('Toilet_Info', ContactSchema); 
