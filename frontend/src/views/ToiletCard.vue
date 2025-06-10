@@ -4,10 +4,9 @@ import axios from 'axios';
 import { io } from "socket.io-client";
 
 const socket = io("http://localhost:3000");
-let Temperature = 0.0
-let Humidity = 0.0
-let Count = 0
+
 const items = ref([]); 
+const info = ref([]); 
   onMounted(() => {
   axios.get('http://localhost:3000/get_toilet_info')
     .then(response => {
@@ -24,18 +23,20 @@ const items = ref([]);
 
     socket.on('ToiletData', data => {
       items.value = data;
-      Temperature = data[1].Temperature
-      Humidity = data[1].Humidity
-      Count = data[1].Count
     });
 
     socket.on("Alert", (data) => {
       alert(data);
     });
+    socket.on("Toilet_Info_Data",(data)=>{
+      info.value=data;
+      console.log(info.value);
+    })
 });
 
 setInterval(() => {
   socket.emit('Updata')
+  socket.emit('Updata_info', 2)
 }, 500); 
   
 
@@ -67,18 +68,20 @@ setInterval(() => {
   </v-container>
 
   <v-container>
-    <h2>🚻 화장실 칸 현황</h2>
+    <h2>🚻 화장실 내부 정보</h2>
     <v-row>
       <v-col
+        v-for="toilet in [info]"
+        :key="toilet.ToiletId"
         cols="12"
         md="6"
         lg="4"
       >
-        <v-card :color=green lighten-4>
+        <v-card color="white">
           <v-card-text>
-            온도: <strong>{{ Temperature}}</strong><br>
-            습도: <strong>{{ Humidity}}</strong><br>
-            이용자수 : <strong>{{ Count}}</strong><br>
+            온도: <strong>{{ toilet.Temperature}}</strong><br>
+            습도: <strong>{{ toilet.Humidity}}</strong><br>
+            내부인원: <strong>{{ toilet.Count}}</strong><br>
           </v-card-text>
         </v-card>
       </v-col>

@@ -1,28 +1,30 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import { io } from "socket.io-client";
 
-const URL = 'http://192.168.132.5:5000/state';
+const socket = io("http://localhost:3000");
+const URL = 'http://192.168.116.5:5000/state';
 
 // 반응형 상태
 const Control_State_Admin = ref(false);
 const items = ref([]); // ✅ 리스트도 반응형으로 선언해야 함
   onMounted(() => {
-    /*
-  axios.get('http://localhost:3000/get_toilet_info')
-    .then(response => {
-      const data = response.data;
-      for (let i = 0; i < data.length; i++) {
-        items.value.push(data[i]); // ✅ this 대신 items.value 사용
-      }
-      console.log(items.value);
-    })
-    .catch(error => {
-      console.error('Error fetching toilet info:', error);
-    });*/
+
     get_Toilet_data()
+    socket.on('ToiletData', data => {
+      items.value = data;
+    });
+
+    socket.on("Alert", (data) => {
+      alert(data);
+    });
 
 });
+
+setInterval(() => {
+  socket.emit('Updata')
+},  500); 
 
 // 버튼 클릭 시 상태 토글
 function State_Control(ToiletId) {
