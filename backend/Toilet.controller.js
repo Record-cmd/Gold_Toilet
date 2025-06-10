@@ -29,7 +29,7 @@ exports.findAll = (req, res) => {
   Contact.find()
   .then( contacts => { 
 	res.send(contacts);
-	console.log(contacts)
+	//console.log(contacts)
 	  })
   .catch(err => { 
     res.status(500).send({ message: err.message }); 

@@ -30,15 +30,27 @@ module.exports = (server) => {
 
         socket.on('Updata', function (data){
             // 클라이언트가 전송한 데이터를 출력합니다.
-            setInterval( axios.get(`http://localhost:3000/get_toilet_info/`)
-            .then(contacts => {
-                const data = contacts.data;
-                socket.emit('ToiletData', data);
-            })
-            .catch(err => { 
-                console.error('에러:', err);
-                socket.emit('Alert', '서버 오류 발생');
-            }),5000);
+            
+            axios.get('http://localhost:3000/get_toilet_info/')
+                .then(res => {
+                socket.emit('ToiletData', res.data);
+                })
+                .catch(err => {
+                console.error(err);
+                });
+            });
+
+        socket.on('Updata_info', function (data){
+            // 클라이언트가 전송한 데이터를 출력합니다.
+            //console.log(data);
+            axios.get(`http://localhost:3000/get_toilet_info/${data}`)
+                .then(res => {
+                socket.emit('Toilet_Info_Data', res.data);
+                })
+                .catch(err => {
+                console.error(err);
+                });
+            });
             
 
         socket.on("disconnect", () => {
@@ -53,5 +65,4 @@ module.exports = (server) => {
     });
 
 
-  })
-};
+  };
