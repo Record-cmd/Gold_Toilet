@@ -72,7 +72,7 @@ setInterval(() => {
     <v-row>
       <v-col
         v-for="toilet in [info]"
-        :key="toilet.ToiletId"
+        
         cols="12"
         md="6"
         lg="4"

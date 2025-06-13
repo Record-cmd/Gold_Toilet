@@ -1,11 +1,9 @@
 <template>
-  <div>sadasd</div>
+  <div>테스트 화면면</div>
 </template>
 
 <script setup>
-defineProps({
-  toilet: Object
-});
+
 
 </script>
 <style>

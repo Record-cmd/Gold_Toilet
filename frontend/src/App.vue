@@ -4,15 +4,11 @@
       drawer: false,
       group: null,
       items: [
-        {
-          title: '홈',
-          value: 'Home',
-          to: '/',
-        },
+
         {
           title: '관리자페이지지',
           value: 'AdminPanel',
-          to: '/AdminPanel',
+          to: '/',
         },
         {
           title: '화장실 현황확인',
